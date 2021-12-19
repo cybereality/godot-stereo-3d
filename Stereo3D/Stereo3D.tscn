@@ -7,7 +7,7 @@
 size = Vector2( 2, 2 )
 
 [sub_resource type="ShaderMaterial" id=3]
-render_priority = -1
+render_priority = -128
 shader = ExtResource( 2 )
 shader_param/eye_separation = 0.00125
 shader_param/convergence_plane = 0.05
