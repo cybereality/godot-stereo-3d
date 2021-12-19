@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Stereo3D/Stereo3D.gd" type="Script" id=1]
+[ext_resource path="res://Stereo3D/Stereo3D.tres" type="Shader" id=2]
+
+[sub_resource type="QuadMesh" id=2]
+size = Vector2( 2, 2 )
+
+[sub_resource type="ShaderMaterial" id=3]
+render_priority = -1
+shader = ExtResource( 2 )
+shader_param/eye_separation = 0.00125
+shader_param/convergence_plane = 0.05
+shader_param/parallax_offset = 0.005
+shader_param/z_near = 0.05
+shader_param/z_far = 100.0
+
+[node name="Stereo3D" type="Spatial"]
+script = ExtResource( 1 )
+
+[node name="Overlay" type="MeshInstance" parent="."]
+transform = Transform( 0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0, 0 )
+cast_shadow = 0
+extra_cull_margin = 16384.0
+generate_lightmap = false
+mesh = SubResource( 2 )
+software_skinning_transform_normals = false
+material/0 = SubResource( 3 )
+__meta__ = {
+"_edit_lock_": true
+}
