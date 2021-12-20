@@ -20,7 +20,8 @@ var shader_material
 
 # sets up the parameters for the stereo 3D
 func _ready():
-	connect("visibility_changed", self, "on_visible_change")
+	#warning-ignore:RETURN_VALUE_DISCARDED
+	self.connect("visibility_changed", self, "on_visible_change")
 	change_separation(separation)
 	change_convergence(convergence)
 	change_pop_out(pop_out)
