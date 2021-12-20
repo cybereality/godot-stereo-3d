@@ -9,6 +9,8 @@ Godot Stereo 3D adds stereoscopic 3D support to Godot Engine (red/cyan anaglyph 
 
 Please download the add-on via the official Godot AssetLib inside the Godot Editor.
 
+[Click Here to Download the Latest Release](https://github.com/cybereality/godot-stereo-3d/releases/latest)
+
 For manual install, download the `Stereo3D` folder from this repository and copy it into your Godot project.
 
 ## CONFIGURATION
