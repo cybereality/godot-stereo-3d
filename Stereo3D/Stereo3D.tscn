@@ -9,10 +9,10 @@ size = Vector2( 2, 2 )
 [sub_resource type="ShaderMaterial" id=3]
 render_priority = -128
 shader = ExtResource( 2 )
-shader_param/eye_separation = 0.00125
-shader_param/convergence_plane = 0.05
-shader_param/parallax_offset = 0.005
-shader_param/z_near = 0.05
+shader_param/stereo_strength = 0.0002
+shader_param/parallax_depth = 1.0
+shader_param/parallax_offset = 0.01
+shader_param/z_near = 0.1
 shader_param/z_far = 100.0
 
 [node name="Stereo3D" type="Spatial"]

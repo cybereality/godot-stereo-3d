@@ -1,5 +1,5 @@
 # Godot Stereo 3D : Add-On For Godot Engine
-Godot Stereo 3D adds stereoscopic 3D support to Godot Engine (red/cyan anaglyph 3D glasses) in game and in editor. Works as a screen-space shader based on the depth buffer (2D to 3D conversion) so is very fast. Requires GLES3. The best 3D glasses to use with this add-on are called Pro-Ana (red/cyan). They make plastic and paper versions and are very affordable.
+Godot Stereo 3D adds stereoscopic 3D support to Godot Engine (red/cyan anaglyph 3D glasses) in game and in editor. Works as a screen-space shader based on the depth buffer (2D to 3D conversion) so is very fast. Requires GLES3. The best 3D glasses to use with this add-on are called Pro-Ana (red/cyan). They make plastic and paper versions and are very affordable. Proview and Anachrome glasses also work well (red/cyan). 
 
 ![Screenshot](ScreenShots/Godot_Stereo_3D_Game.jpg)
 
@@ -14,16 +14,15 @@ For manual install, download the `Stereo3D` folder from this repository and copy
 ## CONFIGURATION
 
 * Place the `Stereo3D.tscn` scene inside your main game tree. 
-* If used in combination with `Godot Super Scaling`, the `Stereo3D` node should be inside your game world.
 * In the `Stereo3D` inspector settings, check the `Enable` box to turn stereo on or off in game or in editor.
 * Set `Z Near` to the z_near of your camera.
 * Set `Z Far` to the z_far of your camera.
-* The `Separation` controls the distance between the eyes. `0` is no distance and `100` is the maximum.
-* Setting `Separation` too high may cause discomfort, so leaving it around the default of `50` is recommended.
-* The `Convergence` controls the distance to the parallax plane the eyes are focused on (on the z axis). 
-* Higher values for `Convergence` will result in a greater 3D effect, but setting it too high may cause discomfort.
-* The `Pop Out` setting controls the overlap between the left/right images. This makes the image more 3D or more comfortable.
-* Typically lower `Pop Out` settings are easier to focus on. However, if you use transparent surfaces or reflections (e.g. glass windows) then it is better to set `Pop Out` to the maximum so that the transparent pass closer matches the 3D render.
+* The `Stereo Strength` controls the distance between the eyes. `0` is no distance and `100` is the maximum.
+* Setting `Stereo Strength` too high may cause discomfort, so leaving it around the default of `50` is recommended.
+* The `Parallax Depth` controls the distance to the parallax plane the eyes are focused on (on the z axis). 
+* Higher values for `Parallax Depth` will result in a greater 3D effect, but setting it too high may cause discomfort.
+* The `Parallax Offset` setting controls the overlap between the left/right images. This makes the image more 3D or more comfortable.
+* Typically higher `Parallax Offset` settings are easier to focus on. However, it can depend on the content.
 * If you have overlapping transparent surfaces in your game, you need to set the `Render Priority` of the transparent material to `1` or above (for example, in a racing game, viewed from the 3rd person, the front window could have `Render Priority` of `0` and the back `1`).
 * For cut-out textures (like decals or grass) the `Render Priority` should be above `0`, the `Depth Draw Mode` set to `Opaque Pre-Pass`, `Transparent` set to false, and enable `Use Alpha Scissor` on the material. If the decal texture is on top of a transparent material (e.g. a sticker on a window) then the `Depth Draw Mode` must be set to `Never`.
 * If you use reflection probes, the reflections will be captured with the results of the post-process and will be incorrect. In these cases, you should leave the `Stereo3D` disabled in game, then on _ready() in your game, wait a certain amount of time (enough for the captures to take place) before enabling `Stereo3D`.
@@ -34,7 +33,7 @@ For manual install, download the `Stereo3D` folder from this repository and copy
 
 MIT License
 
-Copyright (c) 2021 Andres Hernandez
+Copyright (c) 2022 Andres Hernandez
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

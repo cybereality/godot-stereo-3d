@@ -8,29 +8,29 @@ render_mode skip_vertex_transform, depth_test_disable,
 	unshaded, shadows_disabled, ambient_light_disabled;
 
 // separation between the eyes
-uniform float eye_separation = 0.00125;
+uniform float stereo_strength = 0.0002;
 // focus plane on z axis
-uniform float convergence_plane = 0.05;
+uniform float parallax_depth = 0.5;
 // overlap of left/right images
-uniform float parallax_offset = 0.005;
+uniform float parallax_offset = 0.01;
 // z near of the camera
-uniform float z_near = 0.05;
+uniform float z_near = 0.1;
 // z far of the camera
 uniform float z_far = 100.0;
 // x offset for sample coordinates
 const float samples[3] = {0.5, 0.66, 1.0};
 // count for above samples
 const int sample_count = 3;
-// left color filter to reduce ghosting
-const mat3 left_optimize = mat3(
-	vec3(0.437, 0.449, 0.164),
-	vec3(-0.062, -0.062, -0.024),
-	vec3(-0.048, -0.050, -0.017));
-// right color filter to reduce ghosting
-const mat3 right_optimize = mat3(
-	vec3(-0.011, -0.032, -0.007),
-	vec3(0.377, 0.761, 0.009),
-	vec3(-0.026, -0.093, 1.234));
+// left color filter
+const mat3 left_filter = mat3(
+	vec3(0.4561, 0.500484, 0.176381),
+	vec3(-0.400822, -0.0378246, -0.0157589),
+	vec3(-0.0152161, -0.0205971, -0.00546856));
+// right color filter
+const mat3 right_filter = mat3(
+	vec3(-0.0434706, -0.0879388, -0.00155529),
+	vec3(0.378476, 0.73364, -0.0184503),
+	vec3(-0.0721527, -0.112961, 1.2264));
 
 // scales the overlay to full screen
 void vertex() {
@@ -45,15 +45,16 @@ vec3 getColor(sampler2D tex, vec2 uv) {
 
 // samples the depth from depth buffer in linear space
 float getDepth(sampler2D tex, vec2 uv) {
-	float depth_map = textureLod(tex, uv, 0.0).r * 2.0 - 1.0;
-	float linear_depth = 2.0 * z_near * z_far / (z_far + z_near - depth_map * (z_far - z_near));
+	float depth_sample = textureLod(tex, uv, 0.0).r;
+	float ndc = depth_sample * 2.0 - 1.0;
+	float linear_depth = (2.0 * z_near * z_far) / (z_far + z_near - ndc * (z_far - z_near));
 	linear_depth /= z_far;
 	return linear_depth;
 }
 
 // get the parallax offset
 float getParallax(float depth) {
-	depth = 1.0 - convergence_plane / depth;
+	depth = 1.0 - parallax_depth / depth;
 	return depth;
 }
 
@@ -64,17 +65,19 @@ void fragment() {
 	vec2 uv = vec2(0.0);
 	
 	for (int i = 0; i < sample_count; ++i) {
-		uv.x = samples[i] * eye_separation + parallax_offset;
+		uv.x = samples[i] * stereo_strength + parallax_offset;
 		min_depth_left = min(min_depth_left, getDepth(DEPTH_TEXTURE, SCREEN_UV + uv));
 		min_depth_right = min(min_depth_right, getDepth(DEPTH_TEXTURE, SCREEN_UV - uv));
 	}
 	
-	float parallax_left = eye_separation * getParallax(min_depth_left) + parallax_offset;
-	float parallax_right = eye_separation * getParallax(min_depth_right) + parallax_offset;
+	float parallax_left = stereo_strength * getParallax(min_depth_left) + parallax_offset;
+	float parallax_right = stereo_strength * getParallax(min_depth_right) + parallax_offset;
 	
 	vec3 color_left = getColor(SCREEN_TEXTURE, SCREEN_UV + vec2(parallax_left, 0.0));
 	vec3 color_right = getColor(SCREEN_TEXTURE, SCREEN_UV - vec2(parallax_right, 0.0));
-		
-	ALBEDO = clamp(color_left * left_optimize, vec3(0.0), vec3(1.0)) + clamp(color_right * right_optimize, vec3(0.0), vec3(1.0));
+	
+	vec3 color_final = clamp(color_left * left_filter, vec3(0.0), vec3(1.0)) + clamp(color_right * right_filter, vec3(0.0), vec3(1.0));
+
+	ALBEDO = color_final;
 }
 "
